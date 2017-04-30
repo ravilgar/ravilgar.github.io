@@ -48,32 +48,13 @@ export class Play extends Phaser.State {
             'spacebar': Phaser.KeyCode.SPACEBAR
         });
 
+        // создаем оружие
+        this.createWeapon();
     }
 
     update() {
-        // let textStyle = { font: '45px Arial', alight: 'center', stroke: 'blue', fill: 'blue' };
 
-        // // время
-        // let timeText = this.game.add.text(this.player.x + this.game.width, this.game.world.centerY - 100, 'Space Trip', textStyle);
-        // timeText.anchor.set(0.5);
-
-        //     if (!this.startTime) {
-        //         this.startTime = Date.now();
-        //     }
-
-        //     //20 seconds to win
-        //     if ((Date.now() - this.startTime) > 20000) {
-        //         this.startTime = 0;
-        //         this.game.state.start('gameover');
-        //     }
-
-        //     this.wizard.move(this.cursors);
-
-        //     if (this.game.input.keyboard.isDown(Phaser.KeyCode.SPACEBAR)) {
-        //         this.startTime = 0;
-        //         this.game.state.start('victory');
-        //     }
-
+        // устанавливаем камеру
         this.game.camera.setPosition(this.player.x - this.game.width * 0.2, this.game.world.centerY);
 
         // движение вслед за нажатием (касанием); в мобильной версии отключить
@@ -90,7 +71,9 @@ export class Play extends Phaser.State {
         // кнопки вперед, назад, влево и вправо
         if (this.cursors.up.isDown || this.keys.up.isDown) {
             console.log("up!");
-            this.speed += this.changeSpeed;
+            if (this.speed <= (this.weapon.bulletSpeed / 2)) {
+                this.speed += this.changeSpeed;
+            }
             this.game.physics.arcade.velocityFromAngle(this.player.angle, this.speed, this.player.body.velocity);
         }
         if (this.cursors.down.isDown || this.keys.down.isDown) {
@@ -119,7 +102,13 @@ export class Play extends Phaser.State {
         if (this.keys.spacebar.downDuration(1)) {
             console.log("spacebar!")
             this.fireBullet();
+
         }
+
+
+
+        // столкновение пули с астероидом
+        this.game.physics.arcade.collide(this.weapon.bullets, this.asteroids, this.fireAsteroid, null, this);
 
         // столкновение корабля с астероидом
         this.game.physics.arcade.collide(this.player, this.asteroids, this.hitAsteroid, null, this);
@@ -177,6 +166,9 @@ export class Play extends Phaser.State {
         this.scoreLabel.text = this.playerScore;
         //remove sprite
         jewelrie.destroy();
+
+        // создаем оружие
+        this.createWeapon();
     }
     showLabels() {
         //score text
@@ -211,7 +203,39 @@ export class Play extends Phaser.State {
         }
     }
 
-    
+    // создаем оружие
+    createWeapon() {
+
+        //  Creates bullets, using the 'bullet' graphic
+        this.weapon = this.game.add.weapon(this.playerScore, 'bullet');
+
+        //  The bullet will be automatically killed when it leaves the world bounds
+        this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
+
+        //  The speed at which the bullet is fired
+        this.weapon.bulletSpeed = 800;
+
+        //  Tell the Weapon to track the 'player' Sprite
+        //  With no offsets from the position
+        //  But the 'true' argument tells the weapon to track sprite rotation
+        this.weapon.trackSprite(this.player, 50, 0, true);
+    }
+    fireBullet() {
+        if (this.playerScore > 0) {
+            this.weapon.fire();
+
+            //update score 
+            this.playerScore--;
+
+            //will add later: 
+            this.scoreLabel.text = this.playerScore;
+        }
+    }
+    fireAsteroid(player, asteroid) {
+        console.log('TRUEE!!!');
+        this.weapon.killAll();
+        asteroid.kill();
+    }
 
     // при столкновении корабля с астероидом
     hitAsteroid() {

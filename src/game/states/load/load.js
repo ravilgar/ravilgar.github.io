@@ -20,6 +20,7 @@ export class Load extends Phaser.State {
         this.game.load.image('station', 'assets/images/gas-station.png');
         this.game.load.image('gem', 'assets/images/gem.png');
         this.game.load.image('explosion', 'assets/images/explosion.png');
+        this.game.load.image('bullet', 'assets/images/bullet.png');
 
         // audio
         this.game.load.audio('secretConversationsSound', ['assets/audio/secret-conversations.ogg', 'assets/sounds/secret-conversations.mp3']);

@@ -1,0 +1,24 @@
+{
+  "name": "phaser-es2015",
+  "version": "1.0.0",
+  "description": "IT-academy js course",
+  "main": "index.js",
+  "scripts": {
+    "start": "http-server -o -c-1"
+  },
+  "author": "Ravil Garipov",
+  "license": "ISC",
+  "devDependencies": {
+    "jspm": "^0.16.53"
+  },
+  "jspm": {
+    "dependencies": {
+      "phaser": "github:photonstorm/phaser@^2.6.2"
+    },
+    "devDependencies": {
+      "babel": "npm:babel-core@^5.8.24",
+      "babel-runtime": "npm:babel-runtime@^5.8.24",
+      "core-js": "npm:core-js@^1.1.4"
+    }
+  }
+}

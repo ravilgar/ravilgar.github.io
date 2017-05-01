@@ -4,7 +4,8 @@
   "description": "IT-academy js course",
   "main": "index.js",
   "scripts": {
-    "start": "http-server -o -c-1"
+    "start": "http-server -o -c-1",
+    "build": "jspm bundle src/main.js game-bundle.js --minify"
   },
   "author": "Ravil Garipov",
   "license": "ISC",

@@ -200,6 +200,7 @@ export class Play extends Phaser.State {
             asteriod.body.immovable = true;
             // чтобы астероиды не покидали игрового поля
             asteriod.body.collideWorldBounds = true;
+            asteriod.body.bounce.setTo(1, 1);
         }
     }
 

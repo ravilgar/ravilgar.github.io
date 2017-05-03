@@ -6,9 +6,12 @@ export class Play extends Phaser.State {
     create() {
         // первоначальный счет равен 0
         this.playerScore = 0;
+        
+        // снарядов изначально 
+        this.bulletAmount = 0;
 
         // задаем размеры игрового поля
-        this.game.world.setBounds(0, 0, this.game.width * 12, this.game.height);
+        this.game.world.setBounds(0, 0, this.game.width * 60, this.game.height);
 
         // показываем фоновое изображение космоса, с повторением
         this.background = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.world.height, 'space');
@@ -53,6 +56,9 @@ export class Play extends Phaser.State {
     }
 
     update() {
+        
+        this.playerScore = parseInt((this.player.x - this.game.width * 0.2)/10)*10;
+        this.scoreLabel2.text = "score = " + this.playerScore;
 
         // устанавливаем камеру
         this.game.camera.setPosition(this.player.x - this.game.width * 0.2, this.game.world.centerY);
@@ -146,7 +152,7 @@ export class Play extends Phaser.State {
         this.jewelries.physicsBodyType = Phaser.Physics.ARCADE;
 
         // количество драгоценностей
-        let numJewelries = 12;
+        let numJewelries = 30;
         let jewelrie;
 
         for (let i = 0; i < numJewelries; i++) {
@@ -161,9 +167,9 @@ export class Play extends Phaser.State {
         //play collect sound 
         this.collectSound.play();
         //update score 
-        this.playerScore++;
+        this.bulletAmount++;
         //will add later: 
-        this.scoreLabel.text = this.playerScore;
+        this.scoreLabel.text = "bullets = " + this.bulletAmount;
         //remove sprite
         jewelrie.destroy();
 
@@ -172,10 +178,15 @@ export class Play extends Phaser.State {
     }
     showLabels() {
         //score text
-        let text = "0";
+        let text = "bullets = 0";
         let style = { font: "20px Arial", fill: "#fff", align: "center" };
-        this.scoreLabel = this.game.add.text(this.game.width - 50, this.game.height - 50, text, style);
+        this.scoreLabel = this.game.add.text(this.game.width - 150, 70,  text, style);
         this.scoreLabel.fixedToCamera = true;
+        
+        //score text
+        let text2 = "score = 0";
+        this.scoreLabel2 = this.game.add.text(this.game.width - 150, 40,  text2, style);
+        this.scoreLabel2.fixedToCamera = true;
     }
 
     // генерируем астероиды
@@ -185,7 +196,7 @@ export class Play extends Phaser.State {
         this.asteroids.enableBody = true;
         this.asteroids.physicsBodyType = Phaser.Physics.ARCADE;
         // получаем случайное число  (количество создаваемых астероидов)
-        let numAsteroids = this.game.rnd.integerInRange(50, 100);
+        let numAsteroids = this.game.rnd.integerInRange(300, 500);
         let asteriod;
 
         for (let i = 0; i < numAsteroids; i++) {
@@ -194,8 +205,8 @@ export class Play extends Phaser.State {
             // меняем размеры астероидов
             asteriod.scale.setTo(this.game.rnd.integerInRange(5, 30) / 60);
             //physics properties
-            asteriod.body.velocity.x = this.game.rnd.integerInRange(-40, 40);
-            asteriod.body.velocity.y = this.game.rnd.integerInRange(-40, 40);
+            asteriod.body.velocity.x = this.game.rnd.integerInRange(-50, 50);
+            asteriod.body.velocity.y = this.game.rnd.integerInRange(-50, 50);
             // используем immovable = true, чтобы траектории метеоритов не менялись при столкновении с игроком
             asteriod.body.immovable = true;
             // чтобы астероиды не покидали игрового поля
@@ -208,7 +219,7 @@ export class Play extends Phaser.State {
     createWeapon() {
 
         //  Creates bullets, using the 'bullet' graphic
-        this.weapon = this.game.add.weapon(this.playerScore, 'bullet');
+        this.weapon = this.game.add.weapon(this.bulletAmount, 'bullet');
 
         //  The bullet will be automatically killed when it leaves the world bounds
         this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
@@ -222,14 +233,14 @@ export class Play extends Phaser.State {
         this.weapon.trackSprite(this.player, 50, 0, true);
     }
     fireBullet() {
-        if (this.playerScore > 0) {
+        if (this.bulletAmount > 0) {
             this.weapon.fire();
 
             //update score 
-            this.playerScore--;
+            this.bulletAmount--;
 
             //will add later: 
-            this.scoreLabel.text = this.playerScore;
+            this.scoreLabel.text = "bullet = " + this.bulletAmount;
         }
     }
     fireAsteroid(player, asteroid) {

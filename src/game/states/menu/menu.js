@@ -7,10 +7,9 @@ export class Menu extends Phaser.State {
 
         this.highestScore = Math.max(score, this.highestScore);
 
-
-
     }
     create() {
+        console.log('main menu');
 
         // show the space tile, repeated 
         this.background = this.game.add.tileSprite(0, 0, this.game.width, this.game.height, 'space');
@@ -18,7 +17,7 @@ export class Menu extends Phaser.State {
         this.background.autoScroll(-15, 0);
 
 
-        let textStyle = { font: '45px Arial', alight: 'center', stroke: 'blue', fill: 'blue' };
+        let textStyle = { font: '45px Arial', alight: 'center', stroke: 'blue', fill: "#fff" };
 
         // Название игры
         let title = this.game.add.text(this.game.world.centerX, this.game.world.centerY - 100, 'Space Trip', textStyle);
@@ -44,6 +43,7 @@ export class Menu extends Phaser.State {
             this.game.state.start('play');
             // console.log('in the play state');
         }
+        
     }
 
 }
